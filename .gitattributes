@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Ignore Rust build output in GitHub language stats
+target/** linguist-generated
