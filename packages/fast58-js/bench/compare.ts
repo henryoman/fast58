@@ -18,6 +18,7 @@ interface BenchCase {
 interface Suite {
   label: string;
   sizes: number[];
+  inputStyle: "mixed" | "no-leading-zero" | "leading-zero-heavy";
 }
 
 interface RunSummary {
@@ -34,18 +35,32 @@ const suites: Suite[] = [
   {
     label: "Broad Mix",
     sizes: [0, 1, 2, 4, 8, 16, 32, 64, 128, 256],
+    inputStyle: "mixed",
   },
   {
     label: "32B Hot Path",
     sizes: [32],
+    inputStyle: "mixed",
   },
   {
     label: "64B Hot Path",
     sizes: [64],
+    inputStyle: "mixed",
   },
   {
     label: "Large Payloads",
     sizes: [128, 256, 512, 1024],
+    inputStyle: "mixed",
+  },
+  {
+    label: "Random No Leading Zero",
+    sizes: [1, 2, 4, 8, 16, 32, 64, 128, 256],
+    inputStyle: "no-leading-zero",
+  },
+  {
+    label: "Leading Zero Heavy",
+    sizes: [8, 16, 32, 64, 128, 256],
+    inputStyle: "leading-zero-heavy",
   },
 ];
 
@@ -114,11 +129,43 @@ function geometricMean(values: number[]): number {
   return Math.exp(sum / values.length);
 }
 
-function makeCases(sizes: number[]): BenchCase[] {
+function ensureNoLeadingZero(data: Uint8Array, seed: number): void {
+  if (data.length === 0) {
+    return;
+  }
+
+  if (data[0] === 0) {
+    data[0] = (seed & 0xff) || 1;
+  }
+}
+
+function makeLeadingZeroHeavy(data: Uint8Array, seed: number): void {
+  const size = data.length;
+  if (size === 0) {
+    return;
+  }
+
+  const zeroCount = Math.min(size - 1, Math.max(1, Math.floor(size / 4)));
+  data.fill(0, 0, zeroCount);
+  if (zeroCount < size && data[zeroCount] === 0) {
+    data[zeroCount] = (seed & 0xff) || 1;
+  }
+}
+
+function makeCases(suite: Suite): BenchCase[] {
+  const { inputStyle, sizes } = suite;
   return sizes.map((size, index) => {
-    const data = makeVector(size, 0x12345678 ^ (index * 0x9e3779b9));
-    if (size >= 8 && index % 2 === 0) data[0] = 0;
-    if (size >= 16 && index % 3 === 0) data[1] = 0;
+    const seed = 0x12345678 ^ (index * 0x9e3779b9);
+    const data = makeVector(size, seed);
+
+    if (inputStyle === "mixed") {
+      if (size >= 8 && index % 2 === 0) data[0] = 0;
+      if (size >= 16 && index % 3 === 0) data[1] = 0;
+    } else if (inputStyle === "no-leading-zero") {
+      ensureNoLeadingZero(data, seed);
+    } else {
+      makeLeadingZeroHeavy(data, seed);
+    }
 
     return {
       label: `${size}B`,
@@ -300,7 +347,7 @@ console.log(`Samples per case: ${SAMPLE_COUNT}`);
 const results: Array<{ suite: Suite; runs: Map<string, RunSummary[]> }> = [];
 
 for (const suite of suites) {
-  const cases = makeCases(suite.sizes);
+  const cases = makeCases(suite);
   console.log(`\n${suite.label}`);
   ensureCorrectness(cases);
   const runs = measureSuite(cases);
