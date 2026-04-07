@@ -1,51 +1,42 @@
 # based58
 
-Fast Base58 encoding/decoding for JavaScript.
+Base58 encode/decode with benchmarkable JS and native algorithm variants.
 
-## Usage
+## Layout
 
-```typescript
-import { encode, decode, encodeStr, decodeStr } from "based58";
+- `implementations/js/*`: named JS algorithm candidates
+- `implementations/native.ts`: native binding loader and candidate registry
+- `bench/run.ts`: shared benchmark runner
+- `test/correctness.test.ts`: cross-implementation correctness coverage
+- `src/algorithms/*`: Rust candidate implementations
 
-// Encode a Buffer to base58 string
-encode(Buffer.from("hello"))
-// "Cn8eVZg"
+## Commands
 
-// Decode a base58 string to Buffer
-decode("Cn8eVZg")
-// Buffer<68 65 6c 6c 6f>
-
-// String convenience methods
-encodeStr("hello")
-// "Cn8eVZg"
-
-decodeStr("Cn8eVZg")
-// "hello"
+```sh
+bun test
+bun run benchmark.ts
+bun run build:native
 ```
 
-## API
+## Public API
 
-### `encode(data: Buffer | Uint8Array): string`
-Encode bytes to base58 string.
+```ts
+import {
+  decode,
+  decodeBest,
+  decodeStr,
+  encode,
+  encodeBest,
+  encodeStr,
+} from "based58";
+```
 
-### `decode(data: string): Buffer`
-Decode base58 string to bytes.
+- `encode` / `decode`: fastest JS winners selected from the benchmarked JS candidates
+- `encodeBest` / `decodeBest`: native winners when available, otherwise the JS winners
+- `encodeStr` / `decodeStr`: string helpers
 
-### `encodeStr(str: string): string`
-Encode a string to base58.
+## Benchmarking
 
-### `decodeStr(data: string): string`
-Decode base58 to a string.
+The benchmark runner validates every implementation against `bs58`, measures encode and decode separately, and reports the overall winner for each operation.
 
-## Performance
-
-Benchmarked against bs58 and native implementations on Apple M3:
-
-| Operation | based58 | bs58 |
-|-----------|---------|------|
-| Encode 32B | 571K/s | 52K/s |
-| Decode 32B | 1.8M/s | 91K/s |
-| Encode 256B | 9K/s | 13K/s |
-| Decode 256B | 32K/s | 35K/s |
-
-**based58 is 10-20x faster than bs58** for typical use cases.
+That lets you add a new algorithm, register it once, and compare it against every existing candidate without rewriting the harness.

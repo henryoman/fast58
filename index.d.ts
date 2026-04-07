@@ -2,4 +2,32 @@
 /* eslint-disable */
 export declare function decode(data: string): Buffer
 
+export declare function decodeBs58Rs(data: string): Buffer
+
+export declare function decodeFdFixed(data: string): Buffer
+
+export declare function decodeFive8Fixed(data: string): Buffer
+
+export declare function decodeHybridFive8Bs58(data: string): Buffer
+
+export declare function decodeHybridFive8Carry(data: string): Buffer
+
+export declare function decodeIter(data: string): Buffer
+
+export declare function decodeWhile(data: string): Buffer
+
 export declare function encode(data: Buffer): string
+
+export declare function encodeBs58Rs(data: Buffer): string
+
+export declare function encodeFdFixed(data: Buffer): string
+
+export declare function encodeFive8Fixed(data: Buffer): string
+
+export declare function encodeHybridFive8Bs58(data: Buffer): string
+
+export declare function encodeHybridFive8Carry(data: Buffer): string
+
+export declare function encodeIter(data: Buffer): string
+
+export declare function encodeWhile(data: Buffer): string

@@ -1,143 +1,167 @@
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
 
-const ALPHABET: &[u8; 58] = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-const BASE: usize = 58;
-
-const fn make_decode() -> [i8; 256] {
-    let mut map = [-1i8; 256];
-    let mut i = 0;
-    while i < 58 {
-        map[ALPHABET[i] as usize] = i as i8;
-        i += 1;
-    }
-    map
-}
-const DECODE: [i8; 256] = make_decode();
-
-#[inline(always)]
-pub fn encode(data: &[u8]) -> String {
-    if data.is_empty() {
-        return String::new();
-    }
-
-    let zeros = data.iter().take_while(|&&b| b == 0).count();
-    if zeros == data.len() {
-        return "1".repeat(data.len());
-    }
-
-    let size = ((data.len() - zeros) * 138) / 100 + 1;
-    let mut digits = vec![0u8; size];
-    let mut len = 0;
-
-    for &byte in &data[zeros..] {
-        let mut carry = byte as usize;
-        let mut j = size;
-        let mut written = 0;
-
-        while (carry != 0 || written < len) && j > 0 {
-            j -= 1;
-            carry += (digits[j] as usize) << 8;
-            digits[j] = (carry % BASE) as u8;
-            carry /= BASE;
-            written += 1;
-        }
-        len = written;
-    }
-
-    let mut first = size.saturating_sub(len);
-    while first < size && digits[first] == 0 {
-        first += 1;
-    }
-
-    let mut result = vec![b'1'; zeros + size - first];
-    for (i, &d) in digits[first..].iter().enumerate() {
-        result[zeros + i] = ALPHABET[d as usize];
-    }
-
-    unsafe { String::from_utf8_unchecked(result) }
-}
-
-#[inline(always)]
-pub fn decode(data: &str) -> Vec<u8> {
-    if data.is_empty() {
-        return Vec::new();
-    }
-
-    let bytes = data.as_bytes();
-    let zeros = bytes.iter().take_while(|&&b| b == b'1').count();
-    if zeros == bytes.len() {
-        return vec![0u8; zeros];
-    }
-
-    let size = ((bytes.len() - zeros) * 733) / 1000 + 1;
-    let mut decoded = vec![0u8; size];
-    let mut len = 0;
-
-    for &b in &bytes[zeros..] {
-        let val = DECODE[b as usize];
-        if val < 0 {
-            return Vec::new();
-        }
-
-        let mut carry = val as usize;
-        let mut j = size;
-        let mut written = 0;
-
-        while (carry != 0 || written < len) && j > 0 {
-            j -= 1;
-            carry += BASE * decoded[j] as usize;
-            decoded[j] = (carry & 0xff) as u8;
-            carry >>= 8;
-            written += 1;
-        }
-        len = written;
-    }
-
-    let mut first = size.saturating_sub(len);
-    while first < size && decoded[first] == 0 {
-        first += 1;
-    }
-
-    let mut result = vec![0u8; zeros + size - first];
-    for (i, &d) in decoded[first..].iter().enumerate() {
-        result[zeros + i] = d;
-    }
-    result
-}
+mod algorithms;
 
 #[napi(js_name = "encode")]
 #[inline(always)]
 pub fn napi_encode(data: Buffer) -> String {
-    encode(&data)
+    algorithms::hybrid_five8_bs58::encode(&data)
 }
 
 #[napi(js_name = "decode")]
 #[inline(always)]
 pub fn napi_decode(data: String) -> Buffer {
-    Buffer::from(decode(&data))
+    Buffer::from(algorithms::hybrid_five8_bs58::decode(&data))
+}
+
+#[napi(js_name = "encodeIter")]
+#[inline(always)]
+pub fn napi_encode_iter(data: Buffer) -> String {
+    algorithms::carry_iter::encode(&data)
+}
+
+#[napi(js_name = "decodeIter")]
+#[inline(always)]
+pub fn napi_decode_iter(data: String) -> Buffer {
+    Buffer::from(algorithms::carry_iter::decode(&data))
+}
+
+#[napi(js_name = "encodeWhile")]
+#[inline(always)]
+pub fn napi_encode_while(data: Buffer) -> String {
+    algorithms::carry_while::encode(&data)
+}
+
+#[napi(js_name = "decodeWhile")]
+#[inline(always)]
+pub fn napi_decode_while(data: String) -> Buffer {
+    Buffer::from(algorithms::carry_while::decode(&data))
+}
+
+#[napi(js_name = "encodeBs58Rs")]
+#[inline(always)]
+pub fn napi_encode_bs58_rs(data: Buffer) -> String {
+    algorithms::bs58_rs::encode(&data)
+}
+
+#[napi(js_name = "decodeBs58Rs")]
+#[inline(always)]
+pub fn napi_decode_bs58_rs(data: String) -> Buffer {
+    Buffer::from(algorithms::bs58_rs::decode(&data))
+}
+
+#[napi(js_name = "encodeFdFixed")]
+#[inline(always)]
+pub fn napi_encode_fd_fixed(data: Buffer) -> String {
+    algorithms::fd_fixed::encode(&data)
+}
+
+#[napi(js_name = "decodeFdFixed")]
+#[inline(always)]
+pub fn napi_decode_fd_fixed(data: String) -> Buffer {
+    Buffer::from(algorithms::fd_fixed::decode(&data))
+}
+
+#[napi(js_name = "encodeFive8Fixed")]
+#[inline(always)]
+pub fn napi_encode_five8_fixed(data: Buffer) -> String {
+    algorithms::five8_fixed::encode(&data)
+}
+
+#[napi(js_name = "decodeFive8Fixed")]
+#[inline(always)]
+pub fn napi_decode_five8_fixed(data: String) -> Buffer {
+    Buffer::from(algorithms::five8_fixed::decode(&data))
+}
+
+#[napi(js_name = "encodeHybridFive8Bs58")]
+#[inline(always)]
+pub fn napi_encode_hybrid_five8_bs58(data: Buffer) -> String {
+    algorithms::hybrid_five8_bs58::encode(&data)
+}
+
+#[napi(js_name = "decodeHybridFive8Bs58")]
+#[inline(always)]
+pub fn napi_decode_hybrid_five8_bs58(data: String) -> Buffer {
+    Buffer::from(algorithms::hybrid_five8_bs58::decode(&data))
+}
+
+#[napi(js_name = "encodeHybridFive8Carry")]
+#[inline(always)]
+pub fn napi_encode_hybrid_five8_carry(data: Buffer) -> String {
+    algorithms::hybrid_five8_carry::encode(&data)
+}
+
+#[napi(js_name = "decodeHybridFive8Carry")]
+#[inline(always)]
+pub fn napi_decode_hybrid_five8_carry(data: String) -> Buffer {
+    Buffer::from(algorithms::hybrid_five8_carry::decode(&data))
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::algorithms::{carry_iter, carry_while};
 
     #[test]
-    fn test_basic() {
-        assert_eq!(encode(b"hello"), "Cn8eVZg");
-        assert_eq!(decode("Cn8eVZg"), b"hello");
+    fn test_known_vector() {
+        assert_eq!(carry_iter::encode(b"hello"), "Cn8eVZg");
+        assert_eq!(carry_while::encode(b"hello"), "Cn8eVZg");
+        assert_eq!(carry_iter::decode("Cn8eVZg"), b"hello");
+        assert_eq!(carry_while::decode("Cn8eVZg"), b"hello");
     }
 
     #[test]
-    fn test_zeros() {
-        assert_eq!(encode(b"\x00\x00"), "11");
-        assert_eq!(decode("11"), b"\x00\x00");
+    fn test_leading_zeroes() {
+        let data = b"\x00\x00hello";
+        let encoded = "11Cn8eVZg";
+        assert_eq!(carry_iter::encode(data), encoded);
+        assert_eq!(carry_while::encode(data), encoded);
+        assert_eq!(carry_iter::decode(encoded), data);
+        assert_eq!(carry_while::decode(encoded), data);
     }
 
     #[test]
-    fn test_roundtrip() {
+    fn test_roundtrip_variants_match() {
         let data = [0, 0, 1, 2, 3, 255];
-        let encoded = encode(&data);
-        assert_eq!(decode(&encoded), data);
+        let encoded_iter = carry_iter::encode(&data);
+        let encoded_while = carry_while::encode(&data);
+
+        assert_eq!(encoded_iter, encoded_while);
+        assert_eq!(carry_iter::decode(&encoded_iter), data);
+        assert_eq!(carry_while::decode(&encoded_while), data);
+    }
+
+    #[test]
+    fn test_external_variants_match() {
+        let data32 = [7u8; 32];
+        let data64 = [9u8; 64];
+
+        let encoded32 = carry_iter::encode(&data32);
+        let encoded64 = carry_iter::encode(&data64);
+
+        assert_eq!(super::algorithms::bs58_rs::encode(&data32), encoded32);
+        assert_eq!(super::algorithms::fd_fixed::encode(&data32), encoded32);
+        assert_eq!(super::algorithms::five8_fixed::encode(&data32), encoded32);
+        assert_eq!(super::algorithms::hybrid_five8_bs58::encode(&data32), encoded32);
+        assert_eq!(super::algorithms::hybrid_five8_carry::encode(&data32), encoded32);
+
+        assert_eq!(super::algorithms::bs58_rs::encode(&data64), encoded64);
+        assert_eq!(super::algorithms::fd_fixed::encode(&data64), encoded64);
+        assert_eq!(super::algorithms::five8_fixed::encode(&data64), encoded64);
+        assert_eq!(super::algorithms::hybrid_five8_bs58::encode(&data64), encoded64);
+        assert_eq!(super::algorithms::hybrid_five8_carry::encode(&data64), encoded64);
+
+        assert_eq!(super::algorithms::bs58_rs::decode(&encoded32), data32);
+        assert_eq!(super::algorithms::fd_fixed::decode(&encoded32), data32);
+        assert_eq!(super::algorithms::five8_fixed::decode(&encoded32), data32);
+        assert_eq!(super::algorithms::hybrid_five8_bs58::decode(&encoded32), data32);
+        assert_eq!(super::algorithms::hybrid_five8_carry::decode(&encoded32), data32);
+
+        assert_eq!(super::algorithms::bs58_rs::decode(&encoded64), data64);
+        assert_eq!(super::algorithms::fd_fixed::decode(&encoded64), data64);
+        assert_eq!(super::algorithms::five8_fixed::decode(&encoded64), data64);
+        assert_eq!(super::algorithms::hybrid_five8_bs58::decode(&encoded64), data64);
+        assert_eq!(super::algorithms::hybrid_five8_carry::decode(&encoded64), data64);
     }
 }

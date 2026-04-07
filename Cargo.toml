@@ -12,6 +12,9 @@ napi-build = "2"
 [dependencies]
 napi = "3"
 napi-derive = "3"
+bs58 = "0.5.1"
+fd_bs58 = "0.1.0"
+five8 = "1.0.0"
 
 [profile.release]
 lto = "fat"

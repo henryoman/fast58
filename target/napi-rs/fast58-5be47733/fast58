@@ -1,2 +1,16 @@
 {"kind": "fn", "name": "encode", "js_doc": "", "def": "function encode(data: Buffer): string"}
 {"kind": "fn", "name": "decode", "js_doc": "", "def": "function decode(data: string): Buffer"}
+{"kind": "fn", "name": "encodeIter", "js_doc": "", "def": "function encodeIter(data: Buffer): string"}
+{"kind": "fn", "name": "decodeIter", "js_doc": "", "def": "function decodeIter(data: string): Buffer"}
+{"kind": "fn", "name": "encodeWhile", "js_doc": "", "def": "function encodeWhile(data: Buffer): string"}
+{"kind": "fn", "name": "decodeWhile", "js_doc": "", "def": "function decodeWhile(data: string): Buffer"}
+{"kind": "fn", "name": "encodeBs58Rs", "js_doc": "", "def": "function encodeBs58Rs(data: Buffer): string"}
+{"kind": "fn", "name": "decodeBs58Rs", "js_doc": "", "def": "function decodeBs58Rs(data: string): Buffer"}
+{"kind": "fn", "name": "encodeFdFixed", "js_doc": "", "def": "function encodeFdFixed(data: Buffer): string"}
+{"kind": "fn", "name": "decodeFdFixed", "js_doc": "", "def": "function decodeFdFixed(data: string): Buffer"}
+{"kind": "fn", "name": "encodeFive8Fixed", "js_doc": "", "def": "function encodeFive8Fixed(data: Buffer): string"}
+{"kind": "fn", "name": "decodeFive8Fixed", "js_doc": "", "def": "function decodeFive8Fixed(data: string): Buffer"}
+{"kind": "fn", "name": "encodeHybridFive8Bs58", "js_doc": "", "def": "function encodeHybridFive8Bs58(data: Buffer): string"}
+{"kind": "fn", "name": "decodeHybridFive8Bs58", "js_doc": "", "def": "function decodeHybridFive8Bs58(data: string): Buffer"}
+{"kind": "fn", "name": "encodeHybridFive8Carry", "js_doc": "", "def": "function encodeHybridFive8Carry(data: Buffer): string"}
+{"kind": "fn", "name": "decodeHybridFive8Carry", "js_doc": "", "def": "function decodeHybridFive8Carry(data: string): Buffer"}

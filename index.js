@@ -447,4 +447,18 @@ if (!nativeBinding) {
 
 module.exports = nativeBinding
 module.exports.decode = nativeBinding.decode
+module.exports.decodeBs58Rs = nativeBinding.decodeBs58Rs
+module.exports.decodeFdFixed = nativeBinding.decodeFdFixed
+module.exports.decodeFive8Fixed = nativeBinding.decodeFive8Fixed
+module.exports.decodeHybridFive8Bs58 = nativeBinding.decodeHybridFive8Bs58
+module.exports.decodeHybridFive8Carry = nativeBinding.decodeHybridFive8Carry
+module.exports.decodeIter = nativeBinding.decodeIter
+module.exports.decodeWhile = nativeBinding.decodeWhile
 module.exports.encode = nativeBinding.encode
+module.exports.encodeBs58Rs = nativeBinding.encodeBs58Rs
+module.exports.encodeFdFixed = nativeBinding.encodeFdFixed
+module.exports.encodeFive8Fixed = nativeBinding.encodeFive8Fixed
+module.exports.encodeHybridFive8Bs58 = nativeBinding.encodeHybridFive8Bs58
+module.exports.encodeHybridFive8Carry = nativeBinding.encodeHybridFive8Carry
+module.exports.encodeIter = nativeBinding.encodeIter
+module.exports.encodeWhile = nativeBinding.encodeWhile
