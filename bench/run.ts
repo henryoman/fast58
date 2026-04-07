@@ -29,6 +29,7 @@ const SUITES: BenchSuite[] = [
   },
   {
     id: "fixed32",
+    label: "32-Byte Hot Path",
     sizes: [32],
   },
   {
