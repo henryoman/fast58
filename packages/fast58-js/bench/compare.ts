@@ -1,4 +1,3 @@
-import baseX from "base-x";
 import bs58 from "bs58";
 import { base58 } from "@scure/base";
 
@@ -29,8 +28,7 @@ interface RunSummary {
 const TARGET_MS = 120;
 const SAMPLE_COUNT = 3;
 const RUN_COUNT = 5;
-const ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-const baseXCodec = baseX(ALPHABET);
+const BS58_BASELINE_NAME = "bs58/base-x";
 
 const suites: Suite[] = [
   {
@@ -58,14 +56,9 @@ const candidates: Candidate[] = [
     decode: fast58.decode,
   },
   {
-    name: "bs58",
+    name: BS58_BASELINE_NAME,
     encode: bs58.encode,
     decode: bs58.decode,
-  },
-  {
-    name: "base-x",
-    encode: baseXCodec.encode,
-    decode: baseXCodec.decode,
   },
   {
     name: "scure/base",
@@ -236,12 +229,12 @@ function medianMode(runs: RunSummary[], mode: "encode" | "decode"): number {
 
 function printSuiteSummary(label: string, runs: Map<string, RunSummary[]>): void {
   console.log(`\n${label}`);
-  console.log("| Library | Encode gmean | Decode gmean | Combined gmean | Encode vs bs58 | Decode vs bs58 |");
+  console.log(`| Library | Encode gmean | Decode gmean | Combined gmean | Encode vs ${BS58_BASELINE_NAME} | Decode vs ${BS58_BASELINE_NAME} |`);
   console.log("| --- | ---: | ---: | ---: | ---: | ---: |");
 
-  const bs58Runs = runs.get("bs58");
+  const bs58Runs = runs.get(BS58_BASELINE_NAME);
   if (!bs58Runs) {
-    throw new Error("Missing bs58 baseline");
+    throw new Error(`Missing ${BS58_BASELINE_NAME} baseline`);
   }
 
   const bs58Encode = medianMode(bs58Runs, "encode");
