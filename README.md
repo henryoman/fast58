@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.png" alt="fast58 logo" width="700" />
+  <img src="./logo.png" alt="fast58 logo" width="400" />
 </p>
 
 <p align="center">
