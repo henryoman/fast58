@@ -1,0 +1,1 @@
+{"rustc":16243257175721966122,"features":"[]","declared_features":"[]","target":9388202626367339685,"profile":9719146384424564959,"path":2396290800971502863,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/napi-build-e45a8e39f52e7dd6/dep-lib-napi_build","checksum":false}}],"rustflags":["-C","target-cpu=native"],"config":2069994364910194474,"compile_kind":0}

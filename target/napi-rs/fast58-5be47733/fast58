@@ -1,0 +1,2 @@
+{"kind": "fn", "name": "encode", "js_doc": "", "def": "function encode(data: Buffer): string"}
+{"kind": "fn", "name": "decode", "js_doc": "", "def": "function decode(data: string): Buffer"}
