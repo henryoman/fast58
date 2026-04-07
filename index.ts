@@ -2,7 +2,7 @@ import {
   decode as decodeJsWinner,
   encode as encodeJsWinner,
   implementation as jsWinnerImplementation,
-} from "./implementations/js/carry-string-copy.ts";
+} from "./implementations/js/carry-direct-copy.ts";
 import {
   getNativeDecode,
   getNativeEncode,

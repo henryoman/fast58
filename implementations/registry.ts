@@ -7,8 +7,8 @@ import { implementation as jsCarryStringCopy } from "./js/carry-string-copy.ts";
 import { nativeImplementations } from "./native.ts";
 
 export const jsImplementations = [
-  jsCarryStringCopy,
   jsCarryDirectCopy,
+  jsCarryStringCopy,
   jsCarryJoinSet,
   jsCarryCharCodesSet,
   jsScureBase,

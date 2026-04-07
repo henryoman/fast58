@@ -50,8 +50,8 @@ interface BenchOptions {
 }
 
 const DISPLAY_NAMES: Record<string, string> = {
-  "js/carry-string-copy": "fast58 js current",
-  "js/carry-direct-copy": "fast58 js direct",
+  "js/carry-direct-copy": "fast58 js current",
+  "js/carry-string-copy": "fast58 js string-copy",
   "js/carry-join-set": "fast58 js join",
   "js/carry-charcodes-set": "fast58 js charcodes",
   "js/scure-base": "scure/base",
