@@ -13,7 +13,9 @@
 
 Base58 encode/decode with benchmarkable JS and native algorithm variants.
 
-## Layout
+## Monorepo Layout
+
+The main purpose of this repository is to build bundle and release the javascript version of fast58. It also includes benchmark suites and a rust implmentation we are currently testing.
 
 - `implementations/js/*`: named JS algorithm candidates
 - `implementations/native.ts`: native binding loader and candidate registry
