@@ -11,6 +11,12 @@ type NativeBinding = {
   decodeIter?(data: string): Buffer;
   encodeWhile?(data: Buffer): string;
   decodeWhile?(data: string): Buffer;
+  encodeBs58Opt?(data: Buffer): string;
+  decodeBs58Opt?(data: string): Buffer;
+  encodeBs58U32?(data: Buffer): string;
+  decodeBs58U32?(data: string): Buffer;
+  encodeBs58Port?(data: Buffer): string;
+  decodeBs58Port?(data: string): Buffer;
   encodeBs58Rs?(data: Buffer): string;
   decodeBs58Rs?(data: string): Buffer;
   encodeFdFixed?(data: Buffer): string;
@@ -69,8 +75,14 @@ function makeImplementation(
 
 const encodeIter = wrapEncode(nativeBinding?.encodeIter);
 const decodeIter = wrapDecode(nativeBinding?.decodeIter);
-const encodeWhile = wrapEncode(nativeBinding?.encodeWhile ?? nativeBinding?.encode);
-const decodeWhile = wrapDecode(nativeBinding?.decodeWhile ?? nativeBinding?.decode);
+const encodeWhile = wrapEncode(nativeBinding?.encodeWhile);
+const decodeWhile = wrapDecode(nativeBinding?.decodeWhile);
+const encodeBs58Opt = wrapEncode(nativeBinding?.encodeBs58Opt);
+const decodeBs58Opt = wrapDecode(nativeBinding?.decodeBs58Opt);
+const encodeBs58U32 = wrapEncode(nativeBinding?.encodeBs58U32);
+const decodeBs58U32 = wrapDecode(nativeBinding?.decodeBs58U32);
+const encodeBs58Port = wrapEncode(nativeBinding?.encodeBs58Port);
+const decodeBs58Port = wrapDecode(nativeBinding?.decodeBs58Port);
 const encodeBs58Rs = wrapEncode(nativeBinding?.encodeBs58Rs);
 const decodeBs58Rs = wrapDecode(nativeBinding?.decodeBs58Rs);
 const encodeFdFixed = wrapEncode(nativeBinding?.encodeFdFixed);
@@ -85,6 +97,9 @@ const decodeHybridFive8Carry = wrapDecode(nativeBinding?.decodeHybridFive8Carry)
 export const nativeImplementations = [
   makeImplementation("native/carry-iter", encodeIter, decodeIter),
   makeImplementation("native/carry-while", encodeWhile, decodeWhile),
+  makeImplementation("native/bs58-opt", encodeBs58Opt, decodeBs58Opt),
+  makeImplementation("native/bs58-u32", encodeBs58U32, decodeBs58U32),
+  makeImplementation("native/bs58-port", encodeBs58Port, decodeBs58Port),
   makeImplementation("native/bs58-rs", encodeBs58Rs, decodeBs58Rs),
   makeImplementation("native/fd-fixed", encodeFdFixed, decodeFdFixed),
   makeImplementation("native/five8-fixed", encodeFive8Fixed, decodeFive8Fixed),
@@ -93,14 +108,14 @@ export const nativeImplementations = [
 ].filter((implementation): implementation is Implementation => implementation !== null);
 
 export const nativeLoaded = nativeImplementations.length > 0;
-export const nativeEncodeWinnerId = "native/hybrid-five8-bs58";
-export const nativeDecodeWinnerId = "native/hybrid-five8-bs58";
+export const nativeEncodeWinnerId = "native/bs58-u32";
+export const nativeDecodeWinnerId = "native/bs58-rs";
 
 export function getNativeEncode(): (data: ByteInput) => string {
   return (
-    encodeHybridFive8Bs58 ??
-    encodeHybridFive8Carry ??
-    encodeFive8Fixed ??
+    encodeBs58U32 ??
+    encodeBs58Opt ??
+    encodeBs58Port ??
     encodeBs58Rs ??
     encodeIter ??
     encodeWhile ??
@@ -110,10 +125,9 @@ export function getNativeEncode(): (data: ByteInput) => string {
 
 export function getNativeDecode(): (data: string) => Buffer {
   return (
-    decodeHybridFive8Bs58 ??
-    decodeHybridFive8Carry ??
-    decodeFive8Fixed ??
     decodeBs58Rs ??
+    decodeBs58Port ??
+    decodeBs58U32 ??
     decodeIter ??
     decodeWhile ??
     decodeJsFallback

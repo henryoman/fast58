@@ -6,6 +6,12 @@
 {"kind": "fn", "name": "decodeWhile", "js_doc": "", "def": "function decodeWhile(data: string): Buffer"}
 {"kind": "fn", "name": "encodeBs58Rs", "js_doc": "", "def": "function encodeBs58Rs(data: Buffer): string"}
 {"kind": "fn", "name": "decodeBs58Rs", "js_doc": "", "def": "function decodeBs58Rs(data: string): Buffer"}
+{"kind": "fn", "name": "encodeBs58Port", "js_doc": "", "def": "function encodeBs58Port(data: Buffer): string"}
+{"kind": "fn", "name": "decodeBs58Port", "js_doc": "", "def": "function decodeBs58Port(data: string): Buffer"}
+{"kind": "fn", "name": "encodeBs58Opt", "js_doc": "", "def": "function encodeBs58Opt(data: Buffer): string"}
+{"kind": "fn", "name": "decodeBs58Opt", "js_doc": "", "def": "function decodeBs58Opt(data: string): Buffer"}
+{"kind": "fn", "name": "encodeBs58U32", "js_doc": "", "def": "function encodeBs58U32(data: Buffer): string"}
+{"kind": "fn", "name": "decodeBs58U32", "js_doc": "", "def": "function decodeBs58U32(data: string): Buffer"}
 {"kind": "fn", "name": "encodeFdFixed", "js_doc": "", "def": "function encodeFdFixed(data: Buffer): string"}
 {"kind": "fn", "name": "decodeFdFixed", "js_doc": "", "def": "function decodeFdFixed(data: string): Buffer"}
 {"kind": "fn", "name": "encodeFive8Fixed", "js_doc": "", "def": "function encodeFive8Fixed(data: Buffer): string"}

@@ -1,5 +1,5 @@
 {
-  "name": "based58",
+  "name": "fast58",
   "main": "index.ts",
   "type": "module",
   "devDependencies": {
@@ -12,7 +12,7 @@
     "build:native": "napi build --platform --release"
   },
   "dependencies": {
-    "@scure/base": "^1.2.6",
+    "@scure/base": "^2.0.0",
     "bs58": "^6.0.0"
   }
 }

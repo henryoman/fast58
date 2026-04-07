@@ -49,6 +49,25 @@ interface BenchOptions {
   suiteFilter: Set<string> | null;
 }
 
+const DISPLAY_NAMES: Record<string, string> = {
+  "js/carry-string-copy": "fast58 js current",
+  "js/carry-direct-copy": "fast58 js direct",
+  "js/carry-join-set": "fast58 js join",
+  "js/carry-charcodes-set": "fast58 js charcodes",
+  "js/scure-base": "scure/base",
+  "native/carry-iter": "fast58 native carry-iter",
+  "native/carry-while": "fast58 native carry-while",
+  "native/bs58-opt": "fast58 native bs58-opt",
+  "native/bs58-u32": "fast58 native encode",
+  "native/bs58-port": "fast58 native port",
+  "native/bs58-rs": "fast58 native decode",
+  "native/fd-fixed": "fd_bs58 fixed",
+  "native/five8-fixed": "five8 fixed",
+  "native/hybrid-five8-bs58": "hybrid five8+bs58",
+  "native/hybrid-five8-carry": "hybrid five8+carry",
+  "baseline/bs58": "npm bs58 baseline",
+};
+
 function makeBytes(size: number, seed: number): Buffer {
   const bytes = Buffer.alloc(size);
   let state = seed | 0;
@@ -183,8 +202,9 @@ function measureDecode(implementations: Implementation[], benchCase: BenchCase):
 function printMeasurements(title: string, measurements: Measurement[]): void {
   console.log(title);
   measurements.forEach((measurement, index) => {
+    const label = DISPLAY_NAMES[measurement.id] ?? measurement.id;
     console.log(
-      `  ${index + 1}. ${measurement.id.padEnd(24)} ${Math.round(measurement.opsPerSecond).toLocaleString()}/s`,
+      `  ${index + 1}. ${label.padEnd(28)} ${Math.round(measurement.opsPerSecond).toLocaleString()}/s`,
     );
   });
 }
@@ -229,7 +249,8 @@ function summarizeOverall(
 
   console.log(`\nOverall ${label} Winner: ${overall[0]?.id ?? "n/a"}`);
   overall.forEach((entry, index) => {
-    console.log(`  ${index + 1}. ${entry.id.padEnd(24)} ${Math.round(entry.score).toLocaleString()}/s gmean`);
+    const displayName = DISPLAY_NAMES[entry.id] ?? entry.id;
+    console.log(`  ${index + 1}. ${displayName.padEnd(28)} ${Math.round(entry.score).toLocaleString()}/s gmean`);
   });
 
   console.log(`  Cases: ${cases.map((benchCase) => benchCase.label).join(", ")}`);
@@ -255,7 +276,7 @@ function summarizeOverall(
     }
 
     console.log(
-      `    ${implementationKind.padEnd(8)} ${winner.id.padEnd(24)} ${Math.round(winner.score).toLocaleString()}/s gmean`,
+      `    ${implementationKind.padEnd(8)} ${(DISPLAY_NAMES[winner.id] ?? winner.id).padEnd(28)} ${Math.round(winner.score).toLocaleString()}/s gmean`,
     );
   }
 }
@@ -272,9 +293,11 @@ export async function runBenchmarks(): Promise<void> {
   }
 
   console.log("=".repeat(72));
-  console.log("Base58 implementation benchmark");
-  console.log("Implementations are benchmarked separately for encode and decode across multiple suites.");
-  console.log(`Validated implementations: ${implementations.map((implementation) => implementation.id).join(", ")}`);
+  console.log("fast58 benchmark");
+  console.log("Encode and decode are benchmarked separately across multiple suites.");
+  console.log(
+    `Validated implementations: ${implementations.map((implementation) => DISPLAY_NAMES[implementation.id] ?? implementation.id).join(", ")}`,
+  );
   console.log("=".repeat(72));
 
   const suites = SUITES.filter((suite) => (options.suiteFilter ? options.suiteFilter.has(suite.id) : true));

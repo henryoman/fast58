@@ -1,6 +1,9 @@
+pub mod bs58_port;
+pub mod bs58_opt;
+pub mod bs58_rs;
+pub mod bs58_u32;
 pub mod carry_iter;
 pub mod carry_while;
-pub mod bs58_rs;
 pub mod fd_fixed;
 pub mod five8_fixed;
 pub mod hybrid_five8_bs58;

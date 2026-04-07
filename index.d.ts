@@ -2,7 +2,13 @@
 /* eslint-disable */
 export declare function decode(data: string): Buffer
 
+export declare function decodeBs58Opt(data: string): Buffer
+
+export declare function decodeBs58Port(data: string): Buffer
+
 export declare function decodeBs58Rs(data: string): Buffer
+
+export declare function decodeBs58U32(data: string): Buffer
 
 export declare function decodeFdFixed(data: string): Buffer
 
@@ -18,7 +24,13 @@ export declare function decodeWhile(data: string): Buffer
 
 export declare function encode(data: Buffer): string
 
+export declare function encodeBs58Opt(data: Buffer): string
+
+export declare function encodeBs58Port(data: Buffer): string
+
 export declare function encodeBs58Rs(data: Buffer): string
+
+export declare function encodeBs58U32(data: Buffer): string
 
 export declare function encodeFdFixed(data: Buffer): string
 

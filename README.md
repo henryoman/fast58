@@ -1,4 +1,4 @@
-# based58
+# fast58
 
 Base58 encode/decode with benchmarkable JS and native algorithm variants.
 
@@ -28,15 +28,26 @@ import {
   encode,
   encodeBest,
   encodeStr,
-} from "based58";
+} from "fast58";
 ```
 
 - `encode` / `decode`: fastest JS winners selected from the benchmarked JS candidates
-- `encodeBest` / `decodeBest`: native winners when available, otherwise the JS winners
+- `encodeBest` / `decodeBest`: fixed native winner selected from the generic Rust implementations
 - `encodeStr` / `decodeStr`: string helpers
 
 ## Benchmarking
 
-The benchmark runner validates every implementation against `bs58`, measures encode and decode separately, and reports the overall winner for each operation.
+The benchmark runner validates every implementation against `bs58`, measures encode and decode separately, and reports suite winners for:
+
+- broad mixed payloads
+- 32-byte hot paths
+- 64-byte hot paths
+- large payloads
 
 That lets you add a new algorithm, register it once, and compare it against every existing candidate without rewriting the harness.
+
+For the generic arbitrary-length implementations, the current fixed winners are:
+
+- JS: `js/carry-string-copy`
+- Rust encode: `native/bs58-u32`
+- Rust decode: `native/bs58-rs`

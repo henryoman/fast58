@@ -6,13 +6,13 @@ mod algorithms;
 #[napi(js_name = "encode")]
 #[inline(always)]
 pub fn napi_encode(data: Buffer) -> String {
-    algorithms::hybrid_five8_bs58::encode(&data)
+    algorithms::bs58_u32::encode(&data)
 }
 
 #[napi(js_name = "decode")]
 #[inline(always)]
 pub fn napi_decode(data: String) -> Buffer {
-    Buffer::from(algorithms::hybrid_five8_bs58::decode(&data))
+    Buffer::from(algorithms::bs58_rs::decode(&data))
 }
 
 #[napi(js_name = "encodeIter")]
@@ -49,6 +49,42 @@ pub fn napi_encode_bs58_rs(data: Buffer) -> String {
 #[inline(always)]
 pub fn napi_decode_bs58_rs(data: String) -> Buffer {
     Buffer::from(algorithms::bs58_rs::decode(&data))
+}
+
+#[napi(js_name = "encodeBs58Port")]
+#[inline(always)]
+pub fn napi_encode_bs58_port(data: Buffer) -> String {
+    algorithms::bs58_port::encode(&data)
+}
+
+#[napi(js_name = "decodeBs58Port")]
+#[inline(always)]
+pub fn napi_decode_bs58_port(data: String) -> Buffer {
+    Buffer::from(algorithms::bs58_port::decode(&data))
+}
+
+#[napi(js_name = "encodeBs58Opt")]
+#[inline(always)]
+pub fn napi_encode_bs58_opt(data: Buffer) -> String {
+    algorithms::bs58_opt::encode(&data)
+}
+
+#[napi(js_name = "decodeBs58Opt")]
+#[inline(always)]
+pub fn napi_decode_bs58_opt(data: String) -> Buffer {
+    Buffer::from(algorithms::bs58_opt::decode(&data))
+}
+
+#[napi(js_name = "encodeBs58U32")]
+#[inline(always)]
+pub fn napi_encode_bs58_u32(data: Buffer) -> String {
+    algorithms::bs58_u32::encode(&data)
+}
+
+#[napi(js_name = "decodeBs58U32")]
+#[inline(always)]
+pub fn napi_decode_bs58_u32(data: String) -> Buffer {
+    Buffer::from(algorithms::bs58_u32::decode(&data))
 }
 
 #[napi(js_name = "encodeFdFixed")]
@@ -140,28 +176,64 @@ mod tests {
         let encoded32 = carry_iter::encode(&data32);
         let encoded64 = carry_iter::encode(&data64);
 
+        assert_eq!(super::algorithms::bs58_u32::encode(&data32), encoded32);
+        assert_eq!(super::algorithms::bs58_opt::encode(&data32), encoded32);
+        assert_eq!(super::algorithms::bs58_port::encode(&data32), encoded32);
         assert_eq!(super::algorithms::bs58_rs::encode(&data32), encoded32);
         assert_eq!(super::algorithms::fd_fixed::encode(&data32), encoded32);
         assert_eq!(super::algorithms::five8_fixed::encode(&data32), encoded32);
-        assert_eq!(super::algorithms::hybrid_five8_bs58::encode(&data32), encoded32);
-        assert_eq!(super::algorithms::hybrid_five8_carry::encode(&data32), encoded32);
+        assert_eq!(
+            super::algorithms::hybrid_five8_bs58::encode(&data32),
+            encoded32
+        );
+        assert_eq!(
+            super::algorithms::hybrid_five8_carry::encode(&data32),
+            encoded32
+        );
 
+        assert_eq!(super::algorithms::bs58_u32::encode(&data64), encoded64);
+        assert_eq!(super::algorithms::bs58_opt::encode(&data64), encoded64);
+        assert_eq!(super::algorithms::bs58_port::encode(&data64), encoded64);
         assert_eq!(super::algorithms::bs58_rs::encode(&data64), encoded64);
         assert_eq!(super::algorithms::fd_fixed::encode(&data64), encoded64);
         assert_eq!(super::algorithms::five8_fixed::encode(&data64), encoded64);
-        assert_eq!(super::algorithms::hybrid_five8_bs58::encode(&data64), encoded64);
-        assert_eq!(super::algorithms::hybrid_five8_carry::encode(&data64), encoded64);
+        assert_eq!(
+            super::algorithms::hybrid_five8_bs58::encode(&data64),
+            encoded64
+        );
+        assert_eq!(
+            super::algorithms::hybrid_five8_carry::encode(&data64),
+            encoded64
+        );
 
+        assert_eq!(super::algorithms::bs58_u32::decode(&encoded32), data32);
+        assert_eq!(super::algorithms::bs58_opt::decode(&encoded32), data32);
+        assert_eq!(super::algorithms::bs58_port::decode(&encoded32), data32);
         assert_eq!(super::algorithms::bs58_rs::decode(&encoded32), data32);
         assert_eq!(super::algorithms::fd_fixed::decode(&encoded32), data32);
         assert_eq!(super::algorithms::five8_fixed::decode(&encoded32), data32);
-        assert_eq!(super::algorithms::hybrid_five8_bs58::decode(&encoded32), data32);
-        assert_eq!(super::algorithms::hybrid_five8_carry::decode(&encoded32), data32);
+        assert_eq!(
+            super::algorithms::hybrid_five8_bs58::decode(&encoded32),
+            data32
+        );
+        assert_eq!(
+            super::algorithms::hybrid_five8_carry::decode(&encoded32),
+            data32
+        );
 
+        assert_eq!(super::algorithms::bs58_u32::decode(&encoded64), data64);
+        assert_eq!(super::algorithms::bs58_opt::decode(&encoded64), data64);
+        assert_eq!(super::algorithms::bs58_port::decode(&encoded64), data64);
         assert_eq!(super::algorithms::bs58_rs::decode(&encoded64), data64);
         assert_eq!(super::algorithms::fd_fixed::decode(&encoded64), data64);
         assert_eq!(super::algorithms::five8_fixed::decode(&encoded64), data64);
-        assert_eq!(super::algorithms::hybrid_five8_bs58::decode(&encoded64), data64);
-        assert_eq!(super::algorithms::hybrid_five8_carry::decode(&encoded64), data64);
+        assert_eq!(
+            super::algorithms::hybrid_five8_bs58::decode(&encoded64),
+            data64
+        );
+        assert_eq!(
+            super::algorithms::hybrid_five8_carry::decode(&encoded64),
+            data64
+        );
     }
 }
