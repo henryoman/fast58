@@ -22,6 +22,8 @@ const vectors = [
   Buffer.from([0, 0]),
   Buffer.from([0, 0, 1, 2, 3, 255]),
   Buffer.from("hello"),
+  makeVector(8, 0x0badc0de),
+  makeVector(16, 0x1234abcd),
   makeVector(32, 0x1234abcd),
   makeVector(64, 0x87654321),
   makeVector(256, 0xdeadbeef),

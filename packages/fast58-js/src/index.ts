@@ -3,6 +3,8 @@ const BASE = 58;
 const LEADING_ZERO = 49;
 const ENCODE_FACTOR = Math.log(256) / Math.log(58);
 const DECODE_FACTOR = 733 / 1000;
+const MID_ENCODE_MIN_LENGTH = 8;
+const MID_ENCODE_MAX_LENGTH = 64;
 
 const BASE_MAP = new Uint8Array(256);
 BASE_MAP.fill(255);
@@ -14,11 +16,58 @@ function asBytes(input: Uint8Array): Uint8Array {
   return input;
 }
 
+function encodeMidSized(input: Uint8Array): string {
+  const len = input.length;
+  let zeroes = 0;
+  let length = 0;
+  let offset = 0;
+
+  while (offset < len && input[offset] === 0) {
+    offset++;
+    zeroes++;
+  }
+  if (offset === len) {
+    return "1".repeat(zeroes);
+  }
+
+  const size = ((len - offset) * ENCODE_FACTOR + 1) >>> 0;
+  const digits = new Uint8Array(size);
+
+  while (offset < len) {
+    let carry = input[offset];
+    let written = 0;
+
+    for (let i = size - 1; (carry !== 0 || written < length) && i !== -1; i--, written++) {
+      carry += (256 * digits[i]) >>> 0;
+      digits[i] = (carry % BASE) >>> 0;
+      carry = (carry / BASE) >>> 0;
+    }
+
+    length = written;
+    offset++;
+  }
+
+  let first = size - length;
+  while (first < size && digits[first] === 0) {
+    first++;
+  }
+
+  let result = "1".repeat(zeroes);
+  for (; first < size; first++) {
+    result += ALPHABET.charAt(digits[first]);
+  }
+
+  return result;
+}
+
 export function encode(input: Uint8Array): string {
   const data = asBytes(input);
   const len = data.length;
   if (len === 0) {
     return "";
+  }
+  if (len >= MID_ENCODE_MIN_LENGTH && len <= MID_ENCODE_MAX_LENGTH) {
+    return encodeMidSized(data);
   }
 
   let zeroes = 0;

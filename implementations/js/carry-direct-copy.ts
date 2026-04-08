@@ -1,11 +1,61 @@
 import type { Implementation } from "../types.ts";
 import { ALPHABET, BASE, BASE_MAP, DECODE_FACTOR, ENCODE_FACTOR, LEADING_ZERO } from "./shared.ts";
 
+const MID_ENCODE_MIN_LENGTH = 8;
+const MID_ENCODE_MAX_LENGTH = 64;
+
+function encodeMidSized(data: Uint8Array): string {
+  const len = data.length;
+  let zeroes = 0;
+  let length = 0;
+  let offset = 0;
+
+  while (offset < len && data[offset] === 0) {
+    offset++;
+    zeroes++;
+  }
+  if (offset === len) {
+    return LEADING_ZERO.repeat(zeroes);
+  }
+
+  const size = ((len - offset) * ENCODE_FACTOR + 1) >>> 0;
+  const digits = new Uint8Array(size);
+
+  while (offset < len) {
+    let carry = data[offset];
+    let written = 0;
+
+    for (let i = size - 1; (carry !== 0 || written < length) && i !== -1; i--, written++) {
+      carry += (256 * digits[i]) >>> 0;
+      digits[i] = (carry % BASE) >>> 0;
+      carry = (carry / BASE) >>> 0;
+    }
+
+    length = written;
+    offset++;
+  }
+
+  let first = size - length;
+  while (first < size && digits[first] === 0) {
+    first++;
+  }
+
+  let result = LEADING_ZERO.repeat(zeroes);
+  for (; first < size; first++) {
+    result += ALPHABET.charAt(digits[first]);
+  }
+
+  return result;
+}
+
 export function encode(input: Buffer | Uint8Array): string {
   const data = input instanceof Uint8Array ? input : new Uint8Array(input);
   const len = data.length;
   if (len === 0) {
     return "";
+  }
+  if (len >= MID_ENCODE_MIN_LENGTH && len <= MID_ENCODE_MAX_LENGTH) {
+    return encodeMidSized(data);
   }
 
   let zeroes = 0;

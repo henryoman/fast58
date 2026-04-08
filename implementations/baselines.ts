@@ -8,7 +8,7 @@ export const bs58Implementation: Implementation = {
   id: "baseline/bs58",
   kind: "baseline",
   encode(data) {
-    return bs58.encode(Buffer.from(data));
+    return bs58.encode(data instanceof Uint8Array ? data : new Uint8Array(data));
   },
   decode(data) {
     try {
