@@ -3,8 +3,8 @@
   "main": "index.ts",
   "type": "module",
   "devDependencies": {
-    "@napi-rs/cli": "^3.6.0",
-    "@types/bun": "^1.3.11",
+    "@napi-rs/cli": "^3.6.1",
+    "@types/bun": "^1.3.12",
     "oxlint": "^1.59.0"
   },
   "scripts": {
