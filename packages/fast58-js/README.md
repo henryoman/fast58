@@ -1,22 +1,38 @@
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/npm/fast58-js@0.1.2/logo.png" alt="fast58-js logo" width="400" />
+</p>
+
 # fast58-js
 
 Fast Base58 encode/decode for JavaScript and TypeScript.
 
-`fast58-js` is a zero-dependency package with a `bs58`-compatible API shape. It is JavaScript-only: the npm package is built only from `packages/fast58-js/src/index.ts` and ships only `dist`, `index.d.ts`, `README.md`, and `package.json`. Rust/native benchmark code in this repository is not part of this package build or publish output.
+`fast58-js` is a Solana-friendly Base58 tool for addresses, public keys, signatures, and any other byte payload that needs fast Base58 conversion.
+
+It is the spiritual successor to `bs58`. It uses modern JavaScript, TypeScript types, Bun-first packaging, and focused hot-path work for even better speed.
+
+`fast58-js` is zero-dependency and keeps a `bs58`-compatible API shape. It is JavaScript-only: the npm package is built only from `packages/fast58-js/src/index.ts` and ships only the allowlisted files in `package.json`. Rust/native benchmark code in this repository is not part of this package build or publish output.
 
 ## Install
+
+With Bun:
 
 ```sh
 bun add fast58-js
 ```
 
+With npm:
+
 ```sh
 npm install fast58-js
 ```
 
+With pnpm:
+
 ```sh
 pnpm add fast58-js
 ```
+
+With Yarn:
 
 ```sh
 yarn add fast58-js
@@ -62,6 +78,7 @@ The published tarball is intentionally small and JS-only:
 - `dist/index.cjs`
 - `dist/index.bun.mjs`
 - `index.d.ts`
+- `logo.png`
 - `README.md`
 - `package.json`
 
@@ -77,6 +94,8 @@ The published tarball is intentionally small and JS-only:
   Runs a fresh bundle first, then benchmarks `dist/index.bun.mjs`.
 - `bun run package:check`
   Rebuilds and runs `npm pack --dry-run` so the release contents can be inspected before publishing.
+- `bun run release:check`
+  Runs tests, lint, rebuilds, and checks the exact npm package contents.
 
 ## Benchmark
 

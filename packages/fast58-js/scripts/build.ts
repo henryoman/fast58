@@ -18,7 +18,7 @@ async function run(args: string[]): Promise<void> {
   }
 }
 
-async function buildOne(format: "esm" | "cjs", target: "browser" | "node", outfile: string): Promise<void> {
+async function buildOne(format: "esm" | "cjs", target: "browser" | "node" | "bun", outfile: string): Promise<void> {
   await run([
     "build",
     "--production",
@@ -36,5 +36,6 @@ await rm(dist, { force: true, recursive: true });
 await mkdir(dist, { recursive: true });
 await buildOne("esm", "browser", "index.mjs");
 await buildOne("cjs", "node", "index.cjs");
+await buildOne("esm", "bun", "index.bun.mjs");
 
 console.log(`Built production fast58-js into ${new URL("./dist/", root).pathname}`);

@@ -1,7 +1,7 @@
 {
   "name": "fast58-js",
-  "version": "0.1.0",
-  "description": "Fast Base58 encode/decode package with zero runtime dependencies",
+  "version": "0.1.2",
+  "description": "Fast Base58 encode/decode for Solana and other JavaScript apps",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -18,7 +18,28 @@
   "files": [
     "dist",
     "index.d.ts",
+    "logo.png",
     "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/westsidelaboratories/fast58.git",
+    "directory": "packages/fast58-js"
+  },
+  "bugs": {
+    "url": "https://github.com/westsidelaboratories/fast58/issues"
+  },
+  "homepage": "https://github.com/westsidelaboratories/fast58#readme",
+  "keywords": [
+    "base58",
+    "bs58",
+    "fast",
+    "solana",
+    "typescript",
+    "javascript",
+    "bun",
+    "encoding",
+    "crypto"
   ],
   "publishConfig": {
     "access": "public"
@@ -29,8 +50,10 @@
     "bundle": "bun run scripts/bundle.ts",
     "lint": "oxlint src scripts test bench",
     "lint:fix": "oxlint --fix src scripts test bench",
-    "package:check": "bun run build && npm pack --dry-run",
+    "package:check": "npm pack --dry-run --json",
     "prepack": "bun run build",
+    "prepublishOnly": "bun test && bun run lint && bun run package:check",
+    "release:check": "bun test && bun run lint && bun run package:check",
     "test": "bun test",
     "bench": "bun run scripts/bench.ts"
   },

@@ -13,6 +13,8 @@
 
 Base58 encode/decode with a published JavaScript package and a separate internal native benchmark lab.
 
+`fast58-js` is a Solana-friendly Base58 tool for addresses, public keys, signatures, and other byte payloads. It is the spiritual successor to `bs58`, built with modern JavaScript and TypeScript packaging for even better speed.
+
 ## Install
 
 ```sh
